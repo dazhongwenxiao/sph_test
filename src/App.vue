@@ -2,8 +2,9 @@
   <div>
     <Header/>
     <!-- 路由组件出口 -->
-      <router-view></router-view>
-    <Footer/>
+    <router-view></router-view>
+    <!-- 在home、search显示，在登录、注册隐藏 -->
+    <Footer v-show="$route.meta.show"></Footer>
   </div>
 </template>
 
