@@ -1,7 +1,7 @@
 <template>
   <!-- 商品分类导航 -->
     <div class="type-nav">
-        <div class="container">
+        <div class="container" @mouseenter="enterShow" @mouseleave="leaveShow">
             <h2 class="all">全部商品分类</h2>
             <nav class="nav">
                 <a href="###">服装城</a>
@@ -14,34 +14,37 @@
                 <a href="###">秒杀</a>
             </nav>
             <!-- 三级联动 -->
-            <div class="sort">
-                <div class="all-sort-list2" @click="goSearch">
-                    <div class="item" v-for="c1 in categoryList " :key="c1.categoryId">
-                        <h3>
-                            <a :data-categoryName="c1.categoryName" :data-category1Id="c1.categoryId">{{c1.categoryName}}</a>
-                            <!-- <router-link to="/search">{{c1.categoryName}}</router-link> -->
-                        </h3>
-                        <!-- 二级、三级分类 -->
-                        <div class="item-list clearfix">
-                            <div class="subitem" v-for="c2 in c1.categoryChild" :key="c2.categoryId">
-                                <dl class="fore">
-                                    <dt>
-                                        <a :data-categoryName="c2.categoryName" :data-category2Id="c2.categoryId">{{c2.categoryName}}</a>
-                                        <!-- <router-link to="/search">{{c2.categoryName}}</router-link> -->
-                                    </dt>
-                                    <dd>
-                                        <em v-for="c3 in c2.categoryChild" :key="c3.categoryId">
-                                            <a :data-categoryName="c3.categoryName" :data-category3Id="c3.categoryId">{{c3.categoryName}}</a>
-                                            <!-- <router-link to="/search">{{c3.categoryName}}</router-link> -->
-                                        </em>
-                                    </dd>
-                                </dl>
+            <!-- 过度动画 -->
+            <transition name="sort"> 
+                <div class="sort" v-show="this.show">
+                    <div class="all-sort-list2" @click="goSearch">
+                        <div class="item" v-for="c1 in categoryList " :key="c1.categoryId">
+                            <h3>
+                                <a :data-categoryName="c1.categoryName" :data-category1Id="c1.categoryId">{{c1.categoryName}}</a>
+                                <!-- <router-link to="/search">{{c1.categoryName}}</router-link> -->
+                            </h3>
+                            <!-- 二级、三级分类 -->
+                            <div class="item-list clearfix">
+                                <div class="subitem" v-for="c2 in c1.categoryChild" :key="c2.categoryId">
+                                    <dl class="fore">
+                                        <dt>
+                                            <a :data-categoryName="c2.categoryName" :data-category2Id="c2.categoryId">{{c2.categoryName}}</a>
+                                            <!-- <router-link to="/search">{{c2.categoryName}}</router-link> -->
+                                        </dt>
+                                        <dd>
+                                            <em v-for="c3 in c2.categoryChild" :key="c3.categoryId">
+                                                <a :data-categoryName="c3.categoryName" :data-category3Id="c3.categoryId">{{c3.categoryName}}</a>
+                                                <!-- <router-link to="/search">{{c3.categoryName}}</router-link> -->
+                                            </em>
+                                        </dd>
+                                    </dl>
+                                </div>
                             </div>
                         </div>
+                        
                     </div>
-                    
                 </div>
-            </div>
+            </transition>
         </div>
     </div>
 </template>
@@ -52,10 +55,19 @@ import {mapState} from 'vuex'
 
     export default {
         name: 'TypeNav',
+        data(){
+            return {
+                show: true
+            }
+        },
         // 组件挂载完毕：可以向服务器发请求
         mounted(){
-            // 通知Vuex发请求，获取数据，存储于仓库中
-            this.$store.dispatch('categoryList')
+
+            // 当挂载完毕，让show属性变为false
+            // 如果不是Home路由组件，将TypeNav进行隐藏
+            if(this.$route.path != '/home'){
+                this.show = false
+            }
         },
         computed: {
             ...mapState({
@@ -86,13 +98,31 @@ import {mapState} from 'vuex'
                     }else if(category3id){
                         query.category3Id = category3id
                     }
-                    // 整理完整参数
-                    location.query = query
-                    // 路由跳转
-                    this.$router.push(location)
+
+                    // 判断：如果路由跳转的时候，带有params参数，捎带者传递过去
+                    if(this.$route.params){
+                        // 整理完整参数
+                        location.params = this.$route.params
+                        location.query = query
+                        // 路由跳转
+                        this.$router.push(location)
+                    }
+
                 }
 
+            },
+                // 当鼠标进入的时候，让商品分类列表进行显示
+            enterShow(){
+                this.show = true
+            },
+            // 当鼠标离开的时候，让商品分类列表进行隐藏
+            leaveShow(){
+                if(this.$route.path != '/home'){
+                    this.show = false
+                }        
             }
+            
+
         }
     }
 </script>
@@ -216,6 +246,20 @@ import {mapState} from 'vuex'
                     }
                 }
             }
+        }
+
+        // 过度动画的样式
+        // 过度动画进入的开始状态
+        .sort-enter,.sort-leave-to{
+            height: 0;
+        }
+        // 过度动画结束状态
+        .sort-enter-to,.sort-leave{
+            height: 461px;
+        }
+        // 定义动画时间、速率
+        .sort-enter-active,.sort-leave-active{
+            transition: all .5s linear;
         }
     }
 }

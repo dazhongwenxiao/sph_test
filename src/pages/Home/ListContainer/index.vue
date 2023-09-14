@@ -6,8 +6,8 @@
                 <!--banner轮播-->
                 <div class="swiper-container" id="mySwiper">
                     <div class="swiper-wrapper">
-                        <div class="swiper-slide">
-                            <img src="./images/banner1.jpg" />
+                        <div class="swiper-slide" v-for="carousel in bannerList" :key="carousel.id">
+                            <img :src="carousel.imgUrl" />
                         </div>
                     </div>
                     <!-- 如果需要分页器 -->
@@ -102,8 +102,48 @@
 </template>
 
 <script>
+    import {mapState} from 'vuex'
+    import Swiper from 'swiper'
     export default {
-        name: 'ListContainer'
+        name: 'ListContainer',
+        mounted(){
+            // 派发action：通过Vuex发起ajax请求，将数据仓库存储在仓库中
+            this.$store.dispatch('getBannerList')
+
+        },
+        computed: {
+            ...mapState({
+                bannerList:(state)=>{
+                    return state.home.bannerList
+                }
+            })
+        },
+        watch: {
+            // 监听bannerList数据的变化，因为这条数据发生过变化---由空数组变为数组里面有四个元素
+            bannerList: {
+                handler(){
+                    // 现在咱们通过watch监听bannerList属性的属性值变化
+                    // 如果执行handler方法，代表组件实例身上这个属性已经有了
+                    // v-for执行完毕，才有结构
+                    this.$nextTick(()=>{
+                        var mySwiper = new Swiper('.swiper-container', {
+                            loop: true,
+                            autoplay:true,
+                            // 如果需要分页器
+                            pagination: {
+                                el: ".swiper-pagination"
+                            },
+                            // 如果需要前进后退
+                            navigation: {
+                                nextEl: ".swiper-button-next",
+                                prevEl: ".swiper-button-prev"
+                            }
+                        })
+                    })
+                },
+                deep: true
+            }
+        }
     }
 </script>
 

@@ -47,7 +47,7 @@
                         <div class="floorBanner">
                             <div class="swiper-container" id="floor1Swiper">
                                 <div class="swiper-wrapper">
-                                    <div class="swiper-slide">
+                                    <div class="swiper-slide" >
                                         <img src="./images/floor-1-b01.png">
                                     </div>
                                 </div>
@@ -88,9 +88,22 @@
 </template>
 
 <script>
+    import {mapState} from 'vuex'
     export default {
         // eslint-disable-next-line vue/multi-word-component-names
-        name: 'Floor'
+        name: 'Floor',
+        mounted(){
+            // 派发action：通过Vuex发起ajax请求，将数据仓库存储在仓库中
+            this.$store.dispatch('getFloorList')
+        },
+        computed:{
+            ...mapState({
+                floorList:(state)=>{
+                    return state.home.floorList
+                }
+            })
+        },
+        
     }
 </script>
 
