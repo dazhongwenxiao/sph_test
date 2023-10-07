@@ -11,3 +11,7 @@ export const reqCategoryList = ()=>requests({url:'/product/getBaseCategoryList',
 export const reqGetBannerList = ()=>mockAjax.get(`/banner`)
 // 获取首页楼层列表
 export const reqGetFloorList = ()=>mockAjax.get(`/floor`)
+
+// 获取搜索模块数据
+// 当前这个接口（获取搜索模块的数据），给服务器传递一个默认参数【至少是一个空对象】
+export const reqGetSearchInfo = (params)=>requests({url:'/list', method:'post', data:params})

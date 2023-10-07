@@ -1,31 +1,13 @@
 <template>
   <!--楼层-->
     <div class="floor">
-        <div class="py-container">
+        <div class="py-container" v-for="carousel in floorList" :key="carousel.id">
             <div class="title clearfix">
-                <h3 class="fl">家用电器</h3>
+                <h3 class="fl">{{carousel.name}}</h3>
                 <div class="fr">
-                    <ul class="nav-tabs clearfix">
+                    <ul class="nav-tabs clearfix" v-for="(c1,index) in carousel.navList" :key="index">
                         <li class="active">
-                            <a href="#tab1" data-toggle="tab">热门</a>
-                        </li>
-                        <li>
-                            <a href="#tab2" data-toggle="tab">大家电</a>
-                        </li>
-                        <li>
-                            <a href="#tab3" data-toggle="tab">生活电器</a>
-                        </li>
-                        <li>
-                            <a href="#tab4" data-toggle="tab">厨房电器</a>
-                        </li>
-                        <li>
-                            <a href="#tab5" data-toggle="tab">应季电器</a>
-                        </li>
-                        <li>
-                            <a href="#tab6" data-toggle="tab">空气/净水</a>
-                        </li>
-                        <li>
-                            <a href="#tab7" data-toggle="tab">高端电器</a>
+                            <a href="#tab1" data-toggle="tab">{{c1.text}}</a>
                         </li>
                     </ul>
                 </div>
@@ -35,20 +17,20 @@
                     <div class="floor-1">
                         <div class="blockgary">
                             <ul class="jd-list">
-                                <li>节能补贴</li>
-                                <li>4K电视</li>
-                                <li>空气净化器</li>
-                                <li>IH电饭煲</li>
-                                <li>滚筒洗衣机</li>
-                                <li>电热水器</li>
+                                <li>{{carousel.keywords[0]}}</li>
+                                <li>{{carousel.keywords[1]}}</li>
+                                <li>{{carousel.keywords[2]}}</li>
+                                <li>{{carousel.keywords[3]}}</li>
+                                <li>{{carousel.keywords[4]}}</li>
+                                <li>{{carousel.keywords[5]}}</li>
                             </ul>
-                            <img src="./images/floor-1-1.png" />
+                            <img :src="carousel.imgUrl" />
                         </div>
                         <div class="floorBanner">
-                            <div class="swiper-container" id="floor1Swiper">
+                            <div class="swiper-container" ref="floor1Swiper">
                                 <div class="swiper-wrapper">
-                                    <div class="swiper-slide" >
-                                        <img src="./images/floor-1-b01.png">
+                                    <div class="swiper-slide" v-for="c2 in carousel.carouselList" :key="c2.id">
+                                        <img :src="c2.imgUrl">
                                     </div>
                                 </div>
                                 <!-- 如果需要分页器 -->
@@ -62,22 +44,22 @@
                         <div class="split">
                             <span class="floor-x-line"></span>
                             <div class="floor-conver-pit">
-                                <img src="./images/floor-1-2.png" />
+                                <img :src="carousel.recommendList[0]" />
                             </div>
                             <div class="floor-conver-pit">
-                                <img src="./images/floor-1-3.png" />
+                                <img :src="carousel.recommendList[1]" />
                             </div>
                         </div>
                         <div class="split center">
-                            <img src="./images/floor-1-4.png" />
+                            <img :src="carousel.bigImg" />
                         </div>
                         <div class="split">
                             <span class="floor-x-line"></span>
                             <div class="floor-conver-pit">
-                                <img src="./images/floor-1-5.png" />
+                                <img :src="carousel.recommendList[2]" />
                             </div>
                             <div class="floor-conver-pit">
-                                <img src="./images/floor-1-6.png" />
+                                <img :src="carousel.recommendList[3]" />
                             </div>
                         </div>
                     </div>
@@ -89,6 +71,7 @@
 
 <script>
     import {mapState} from 'vuex'
+    import Swiper from 'swiper'
     export default {
         // eslint-disable-next-line vue/multi-word-component-names
         name: 'Floor',
@@ -103,6 +86,32 @@
                 }
             })
         },
+        watch: {
+            // 监听floorList数据的变化，因为这条数据发生过变化---由空数组变为数组里面有四个元素
+            floorList: {
+                handler(){
+                    // 现在咱们通过watch监听bannerList属性的属性值变化
+                    // 如果执行handler方法，代表组件实例身上这个属性已经有了
+                    // v-for执行完毕，才有结构
+                    this.$nextTick(()=>{
+                        var mySwiper = new Swiper(this.$refs.floor1Swiper, {
+                            loop: true,
+                            autoplay:true,
+                            // 如果需要分页器
+                            pagination: {
+                                el: ".swiper-pagination"
+                            },
+                            // 如果需要前进后退
+                            navigation: {
+                                nextEl: ".swiper-button-next",
+                                prevEl: ".swiper-button-prev"
+                            }
+                        })
+                    })
+                },
+                deep: true
+            }
+        }
         
     }
 </script>

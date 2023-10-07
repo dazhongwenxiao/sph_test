@@ -4,7 +4,7 @@
         <div class="sortList clearfix">
             <div class="center">
                 <!--banner轮播-->
-                <div class="swiper-container" id="mySwiper">
+                <div class="swiper-container" ref="mySwiper">
                     <div class="swiper-wrapper">
                         <div class="swiper-slide" v-for="carousel in bannerList" :key="carousel.id">
                             <img :src="carousel.imgUrl" />
@@ -126,7 +126,7 @@
                     // 如果执行handler方法，代表组件实例身上这个属性已经有了
                     // v-for执行完毕，才有结构
                     this.$nextTick(()=>{
-                        var mySwiper = new Swiper('.swiper-container', {
+                        var mySwiper = new Swiper(this.$refs.mySwiper, {
                             loop: true,
                             autoplay:true,
                             // 如果需要分页器
