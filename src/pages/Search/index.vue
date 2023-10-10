@@ -62,7 +62,10 @@
               <li class="yui3-u-1-5" v-for="good in goodsList" :key="good.id">
                 <div class="list-wrap">
                   <div class="p-img">
-                    <a href="item.html" target="_blank"><img :src="good.defaultImg" /></a>
+                    <!-- 在路由跳转的时候要带id（params参数） -->
+                    <router-link :to="`/detail/${good.id}`">
+                      <img :src="good.defaultImg" />
+                    </router-link >
                   </div>
                   <div class="price">
                     <strong>
@@ -88,7 +91,13 @@
           </div>
 
           <!-- 分页 -->
-          <Pagination></Pagination>
+          <Pagination 
+          :pageNo="searchParams.pageNo" 
+          :pageSize="searchParams.pageSize" 
+          :total="total" 
+          :continues="5"
+          @getPageNo="getPageNo"
+          ></Pagination>
         </div>
       </div>
     </div>
@@ -97,7 +106,7 @@
 
 <script>
   import SearchSelector from './SearchSelector/SearchSelector'
-  import {mapGetters} from 'vuex'
+  import {mapGetters,mapState} from 'vuex'
   export default {
     name: 'Search',
     components: {
@@ -130,6 +139,7 @@
         }
       }
     },
+
     beforeMount(){
     // 在发请求之前，把接口需要传递参数，进行整理（在给服务器发请求之前，把参数整理好，服务器就会返回查询数据）
       Object.assign(this.searchParams,this.$route.query,this.$route.params)
@@ -138,7 +148,12 @@
     mounted(){
       this.getData()
     },
+
     computed: {
+      // 获取search模块展示产品一共多少数据
+      ...mapState({
+        total:state => state.search.searchList.total
+      }),
       // mapGetters里面的写法：传递的数组，因为getters计算是没有划分模块
       ...mapGetters(['goodsList','trademarkList','attrsList']),
       isComprehensive(){
@@ -155,6 +170,7 @@
       },
 
     },
+
     methods: {
       // 向服务器发请求获取search模块数据（根据参数不同返回不同的数据进行展示）
       getData(){
@@ -229,8 +245,15 @@
             this.getData()
           }
         }
+      },
+      // 获取当前第几页
+      getPageNo(pageNo){
+        // 整理带给服务器参数
+        this.searchParams.pageNo = pageNo
+        this.getData()
       }
     },
+
     // 数据监听：监听组件实例身上的属性的属性值变化
     watch: {
       // 监听属性

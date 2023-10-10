@@ -3,14 +3,10 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 
+import routes from './routes'
+
 // 使用插件
 Vue.use(VueRouter)
-
-// 引入路由组件
-import Home from '@/pages/Home'
-import Search from '@/pages/Search'
-import Login from '@/pages/Login'
-import Register from '@/pages/Register'
 
 // 先把VueRouter原型对象的push先保存一份
 let originPush = VueRouter.prototype.push
@@ -42,41 +38,10 @@ VueRouter.prototype.push = function(location, resolve, reject){
 export default new VueRouter({
     
     // 配置路由
-    routes: [
-        {
-            path: "/",
-            meta: {
-                show: true
-            }
-        },
-        {
-            path: "/home",
-            component: Home,
-            meta: {
-                show: true
-            }
-        },
-        {
-            path: "/search/:keyword?",
-            name: "search",
-            component: Search,
-            meta: {
-                show: true
-            }
-        },
-        {
-            path: "/login",
-            component: Login,
-            meta: {
-                show: false
-            }
-        },
-        {
-            path: "/register",
-            component: Register,
-            meta: {
-                show: false
-            }
-        },
-    ]
+    routes,
+    // 滚动行为
+    scrollBehavior(to, from, savePosition){
+        // 返回y=0表示滚动条在最上方
+        return {x: 0, y: 0}
+    }
 })
