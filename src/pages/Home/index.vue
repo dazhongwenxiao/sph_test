@@ -31,9 +31,9 @@ import Brand from '@/pages/Home/Brand'
         ,Floor
         ,Brand
       },
-      mounted(){
-        this.$store.dispatch('getUserInfo')
-      }
+      // mounted(){
+      //   this.$store.dispatch('getUserInfo')
+      // }
     }
 </script>
 
