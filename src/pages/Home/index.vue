@@ -30,6 +30,9 @@ import Brand from '@/pages/Home/Brand'
         ,Like
         ,Floor
         ,Brand
+      },
+      mounted(){
+        this.$store.dispatch('getUserInfo')
       }
     }
 </script>

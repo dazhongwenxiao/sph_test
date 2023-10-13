@@ -88,8 +88,11 @@
                 <a href="javascript:" class="mins" @click="--skuNum>=1?skuNum:skuNum=1" >-</a>
               </div>
               <div class="add">
-                <!--  -->
-                <a href="javascript:">加入购物车</a>
+                <!-- 
+                  这里在加入购物车，进行跳转之前，发请求把你购买的产品信息通知服务器，
+                  服务器进行相应存储
+                 -->
+                <a @click="addShopcar">加入购物车</a>
               </div>
             </div>
           </div>
@@ -343,7 +346,7 @@
   import ImageList from './ImageList/ImageList'
   import Zoom from './Zoom/Zoom'
   import { mapGetters } from 'vuex'
-  import debounce from '../../utils'
+  import debounce from '@/utils/debounce'
 
   export default {
     name: 'Detail',
@@ -387,6 +390,24 @@
           }
         },800)
       },
+      // 加入购物车的回调函数
+      async addShopcar(){
+        try {
+          // 发请求---将产品加入到数据库（通知服务器）
+          await this.$store.dispatch('addOrUpdateShopCart', {
+            skuId: this.$route.params.skuid,
+            skuNum: this.skuNum})
+          // 服务器存储成功---进行路由跳转传参
+            window.sessionStorage.setItem('SKUINFO', JSON.stringify(this.skuInfo))
+          this.$router.push({
+            path: '/addCartSuccess',
+            query: {skuNum:this.skuNum}
+          })
+        } catch (error) {
+          // 失败，给用户进行提示
+          alert(error.message)
+        }
+      }
     }
   }
 </script>
