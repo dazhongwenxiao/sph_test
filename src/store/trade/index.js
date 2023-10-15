@@ -16,7 +16,6 @@ const actions = {
     // 获取用户地址信息
     async getUserAddress({commit}){
         let result = await reqAddressInfo()
-        console.log(result);
         if(result.code == 200){
             commit('GETUSERADDRESS',result.data)
         }
@@ -25,7 +24,7 @@ const actions = {
     async getOrderInfo({commit}){
         let result = await reqOrderInfo()
         if(result.code == 200){
-            console.log(result.data);
+            // console.log(result.data);
             commit('GETORDERINFO',result.data)
         }
     }
