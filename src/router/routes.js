@@ -9,14 +9,31 @@ import ShopCart from '@/pages/ShopCart'
 import Trade from '@/pages/Trade'
 import Pay from '@/pages/Pay'
 import PaySuccess from '@/pages/PaySuccess'
+import Center from '@/pages/Center'
 
+// 可以通过路由懒加载进行优化
 // 路由配置信息
 export default [
+    {
+        path: "/center",
+        component: Center,
+        meta: {
+            show: true
+        }
+    },
     {
         path: "/paysuccess",
         component: PaySuccess,
         meta: {
             show: true
+        },
+        // 路由独享守卫
+        beforeEnter: (to, from, next) => {
+            if(from.path == '/pay'){
+                next()
+            }else{
+                next(false)
+            }
         }
     },
     {
@@ -24,6 +41,14 @@ export default [
         component: Pay,
         meta: {
             show: true
+        },
+        // 路由独享守卫
+        beforeEnter: (to, from, next) => {
+            if(from.path == '/trade'){
+                next()
+            }else{
+                next(false)
+            }
         }
     },
     {
@@ -31,6 +56,14 @@ export default [
         component: Trade,
         meta: {
             show: true
+        },
+        // 路由独享守卫
+        beforeEnter: (to, from, next) => {
+            if(from.path == '/shopcart'){
+                next()
+            }else{
+                next(false)
+            }
         }
     },
     {
